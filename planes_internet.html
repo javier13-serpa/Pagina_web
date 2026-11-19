@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planes de internet | Portal IA</title>
+<meta name="description" content="Calculadora de planes de internet y descuentos con JavaScript.">
+<style>
+    body { background-color: #e6f2fb; color: #12324a; font-family: "Poppins", "Segoe UI", Roboto, Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
+    nav a { margin: 0 8px; color: #1f7ac4; text-decoration: none; font-weight: bold; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 760px; margin: 0 auto; }
+    table { margin: 20px auto; background-color: #ffffff; border-collapse: collapse; min-width: 340px; }
+    th, td { border: 1px solid #b9d3e6; padding: 10px 16px; }
+    th { background-color: #1f7ac4; color: #ffffff; }
+    .descuento { color: #1b7a34; background-color: #e3f6e8; font-weight: bold; }
+    .sin-descuento { color: #5b7488; }
+    .total { font-size: 1.4rem; font-weight: bold; }
+    .error { color: #b3261e; font-weight: bold; }
+</style>
+</head>
+<body>
+<div>
+<header>
+<p>PORTAL EDUCATIVO · INGENIERÍA DE SISTEMAS</p>
+<h1>Planes de internet residencial</h1>
+<p>Ejercicio 2 · JavaScript con switch-case, if y document.write()</p>
+</header>
+<center><nav aria-label="Menú principal">
+    <a href="tarifa_transporte.html">Tarifas de transporte</a>
+    <a href="planes_internet.html">Planes de internet</a>
+</nav></center>
+<main>
+<br>
+<h2>Calcule el valor de su contrato</h2>
+<p>El programa solicita el nombre del cliente, el plan y el número de meses. El total se obtiene multiplicando el valor mensual por los meses contratados, y se aplican descuentos por contratos largos.</p>
+<table border="1" cellpadding="10" cellspacing="0">
+<tr><th>Código</th><th>Plan</th><th>Valor mensual</th></tr>
+<tr><td>1</td><td>Básico (10 Mbps)</td><td>$40.000</td></tr>
+<tr><td>2</td><td>Estándar (50 Mbps)</td><td>$70.000</td></tr>
+<tr><td>3</td><td>Premium (100 Mbps)</td><td>$100.000</td></tr>
+</table>
+<p>Descuentos: 10% desde 6 meses y 20% desde 12 meses.</p>
+<h2>Resultado</h2>
+
+<script>
+    function escapar(texto) {
+        return texto.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // 1. Entrada de datos
+    let cliente = prompt("Digite el nombre del cliente:");
+    let plan = Number(prompt("Seleccione el plan:\n1 = Básico (10 Mbps)\n2 = Estándar (50 Mbps)\n3 = Premium (100 Mbps)"));
+    let meses = Number(prompt("¿Cuántos meses desea contratar?"));
+
+    let nombrePlan = "";
+    let valorMensual = 0;
+    let datosValidos = true;
+
+    if (cliente === null || cliente.trim() === "") {
+        cliente = "Cliente";
+    }
+
+    // 2. switch-case: valor mensual según el plan
+    switch (plan) {
+        case 1:
+            nombrePlan = "Básico (10 Mbps)";
+            valorMensual = 40000;
+            break;
+        case 2:
+            nombrePlan = "Estándar (50 Mbps)";
+            valorMensual = 70000;
+            break;
+        case 3:
+            nombrePlan = "Premium (100 Mbps)";
+            valorMensual = 100000;
+            break;
+        default:
+            datosValidos = false;
+    }
+
+    if (!Number.isInteger(meses) || meses <= 0) {
+        datosValidos = false;
+    }
+
+    if (datosValidos) {
+        // 3. Total sin descuento
+        let subtotal = valorMensual * meses;
+
+        // 4. Descuentos con if (primero el mayor)
+        let porcentaje = 0;
+        if (meses >= 12) {
+            porcentaje = 20;
+        } else if (meses >= 6) {
+            porcentaje = 10;
+        }
+
+        let valorDescuento = subtotal * (porcentaje / 100);
+        let total = subtotal - valorDescuento;
+
+        // 5. Presentación
+        document.write('<table border="1" cellpadding="10" cellspacing="0">');
+        document.write("<tr><th colspan='2'>Resumen del contrato</th></tr>");
+        document.write("<tr><td><strong>Cliente</strong></td><td>" + escapar(cliente) + "</td></tr>");
+        document.write("<tr><td><strong>Plan</strong></td><td>" + nombrePlan + "</td></tr>");
+        document.write("<tr><td><strong>Valor mensual</strong></td><td>$" + valorMensual.toLocaleString("es-CO") + "</td></tr>");
+        document.write("<tr><td><strong>Número de meses</strong></td><td>" + meses + "</td></tr>");
+        document.write("<tr><td><strong>Subtotal</strong></td><td>$" + subtotal.toLocaleString("es-CO") + "</td></tr>");
+
+        if (porcentaje > 0) {
+            document.write("<tr class='descuento'><td><strong>Descuento aplicado</strong></td><td>" + porcentaje + "% (-$" + valorDescuento.toLocaleString("es-CO") + ")</td></tr>");
+        } else {
+            document.write("<tr class='sin-descuento'><td><strong>Descuento aplicado</strong></td><td>0%</td></tr>");
+        }
+
+        document.write("<tr><td><strong>Total a pagar</strong></td><td class='total'>$" + total.toLocaleString("es-CO") + "</td></tr>");
+        document.write("</table>");
+    } else {
+        document.write("<p class='error'>Datos no válidos. Recargue la página, elija un plan de 1 a 3 e ingrese los meses como un entero mayor que cero.</p>");
+    }
+</script>
+
+<p><em>Nota: para repetir el cálculo, recargue la página.</em></p>
+</main>
+<br>
+<br>
+<center><footer>
+    <strong>Portal IA</strong> · Proyecto académico de Programación Web<br>
+    <small>Contenido Educativo.</small>
+</footer></center>
+</div>
+</body>
+</html>

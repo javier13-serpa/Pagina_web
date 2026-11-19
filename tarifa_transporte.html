@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarifa de transporte | Portal IA</title>
+<meta name="description" content="Calculadora de tarifas de transporte con JavaScript.">
+<style>
+    body { background-color: #f3f7fb; color: #1f2933; font-family: "Segoe UI", Roboto, Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
+    nav a { margin: 0 8px; color: #1f6fd1; text-decoration: none; font-weight: bold; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 760px; margin: 0 auto; }
+    table { margin: 20px auto; background-color: #ffffff; border-collapse: collapse; min-width: 340px; }
+    th, td { border: 1px solid #c9d3de; padding: 10px 16px; }
+    th { color: #ffffff; }
+    .total { font-size: 1.4rem; font-weight: bold; }
+    .error { color: #b3261e; font-weight: bold; }
+    /* Colores por tipo de transporte */
+    .bus th { background-color: #2e9e4f; }
+    .bus .total { color: #2e9e4f; }
+    .metro th { background-color: #1f6fd1; }
+    .metro .total { color: #1f6fd1; }
+    .taxi th { background-color: #d4a000; }
+    .taxi .total { color: #b88600; }
+    .intermunicipal th { background-color: #d9531e; }
+    .intermunicipal .total { color: #d9531e; }
+</style>
+</head>
+<body>
+<div>
+<header>
+<p>PORTAL EDUCATIVO · INGENIERÍA DE SISTEMAS</p>
+<h1>Calculadora de tarifas de transporte</h1>
+<p>Ejercicio 1 · JavaScript con switch-case, if y document.write()</p>
+</header>
+<center><nav aria-label="Menú principal">
+    <a href="tarifa_transporte.html">Tarifas de transporte</a>
+    <a href="planes_internet.html">Planes de internet</a>
+</nav></center>
+<main>
+<br>
+<h2>Valor del pasaje</h2>
+<p>El programa solicita su nombre, el tipo de transporte y su condición especial mediante ventanas emergentes. Luego calcula el valor final del pasaje aplicando el descuento que corresponda.</p>
+<table border="1" cellpadding="10" cellspacing="0">
+<tr><th>Código</th><th>Transporte</th><th>Valor base</th></tr>
+<tr><td>1</td><td>Bus Urbano</td><td>$2.500</td></tr>
+<tr><td>2</td><td>Metro</td><td>$2.800</td></tr>
+<tr><td>3</td><td>Taxi</td><td>$5.000</td></tr>
+<tr><td>4</td><td>Intermunicipal</td><td>$10.000</td></tr>
+</table>
+<h2>Resultado</h2>
+
+<script>
+    // Evita que el texto escrito por el usuario se interprete como HTML
+    function escapar(texto) {
+        return texto.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // 1. Entrada de datos
+    let nombre = prompt("Digite su nombre:");
+    let tipo = Number(prompt("Tipo de transporte:\n1 = Bus Urbano\n2 = Metro\n3 = Taxi\n4 = Intermunicipal"));
+    let condicion = Number(prompt("Condición especial:\n1 = Estudiante\n2 = Adulto mayor\n3 = Ninguna"));
+
+    let valorBase = 0;
+    let nombreTransporte = "";
+    let clase = "";
+    let datosValidos = true;
+
+    if (nombre === null || nombre.trim() === "") {
+        nombre = "Usuario";
+    }
+
+    // 2. switch-case: valor base según el transporte
+    switch (tipo) {
+        case 1:
+            nombreTransporte = "Bus Urbano";
+            valorBase = 2500;
+            clase = "bus";
+            break;
+        case 2:
+            nombreTransporte = "Metro";
+            valorBase = 2800;
+            clase = "metro";
+            break;
+        case 3:
+            nombreTransporte = "Taxi";
+            valorBase = 5000;
+            clase = "taxi";
+            break;
+        case 4:
+            nombreTransporte = "Intermunicipal";
+            valorBase = 10000;
+            clase = "intermunicipal";
+            break;
+        default:
+            datosValidos = false;
+    }
+
+    // 3. if: ajuste según la condición especial
+    let porcentaje = 0;
+    let nombreCondicion = "";
+
+    if (condicion === 1) {
+        porcentaje = 20;
+        nombreCondicion = "Estudiante";
+    } else if (condicion === 2) {
+        porcentaje = 30;
+        nombreCondicion = "Adulto mayor";
+    } else if (condicion === 3) {
+        porcentaje = 0;
+        nombreCondicion = "Ninguna";
+    } else {
+        datosValidos = false;
+    }
+
+    // 4. Cálculo y presentación
+    if (datosValidos) {
+        let valorDescuento = valorBase * (porcentaje / 100);
+        let total = valorBase - valorDescuento;
+
+        document.write('<div class="' + clase + '">');
+        document.write('<table border="1" cellpadding="10" cellspacing="0">');
+        document.write("<tr><th colspan='2'>Resumen del pasaje</th></tr>");
+        document.write("<tr><td><strong>Usuario</strong></td><td>" + escapar(nombre) + "</td></tr>");
+        document.write("<tr><td><strong>Transporte</strong></td><td>" + nombreTransporte + "</td></tr>");
+        document.write("<tr><td><strong>Valor base</strong></td><td>$" + valorBase.toLocaleString("es-CO") + "</td></tr>");
+        document.write("<tr><td><strong>Condición</strong></td><td>" + nombreCondicion + "</td></tr>");
+        document.write("<tr><td><strong>Descuento aplicado</strong></td><td>" + porcentaje + "% ($" + valorDescuento.toLocaleString("es-CO") + ")</td></tr>");
+        document.write("<tr><td><strong>Total a pagar</strong></td><td class='total'>$" + total.toLocaleString("es-CO") + "</td></tr>");
+        document.write("</table></div>");
+    } else {
+        document.write("<p class='error'>Datos no válidos. Recargue la página y elija un transporte de 1 a 4 y una condición de 1 a 3.</p>");
+    }
+</script>
+
+<p><em>Nota: para repetir el cálculo, recargue la página.</em></p>
+</main>
+<br>
+<br>
+<center><footer>
+    <strong>Portal IA</strong> · Proyecto académico de Programación Web<br>
+    <small>Contenido Educativo.</small>
+</footer></center>
+</div>
+</body>
+</html>
